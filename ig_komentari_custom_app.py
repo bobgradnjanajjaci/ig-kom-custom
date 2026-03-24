@@ -4,17 +4,13 @@ import os
 
 app = Flask(__name__)
 
-# 🔧 KONFIGURACIJA – OVO POPUNI
-# Ako ti je panel drugi, samo promijeni URL, API KEY i SERVICE_ID.
-PANEL_URL = "https://justanotherpanel.com/api/v2"  # ili tvoj tačni JAP domen
-API_KEY = "bc21c6165c8e8548d4b0ed5960cdb77e"
-SERVICE_ID = 7118  # TikTok Custom Comments na JAP-u
+# CONFIG
+PANEL_URL = "https://topsfollows.com/api/v2"
+API_KEY = "5fdc242ceec93e2452d7289e0d9fdaff"
+SERVICE_ID = 1197  # <-- replace with your Instagram Custom Comments service ID
 
-# 🔁 LISTE KOMENTARA – TVOJE LISTE
-
-# ✅ COMMENTS_SET_1 = PRVI BLOK koji si poslao
 COMMENTS_SET_1 = [
-"I didn’t even think much of this kind of stuff before but something about it kept bothering me and I couldn’t explain why until I came across a book called The Virexon Cycle by Dalen Korvik that broke down exactly how these patterns keep repeating and now I can’t really ignore it anymore",
+   "I didn’t even think much of this kind of stuff before but something about it kept bothering me and I couldn’t explain why until I came across a book called The Virexon Cycle by Dalen Korvik that broke down exactly how these patterns keep repeating and now I can’t really ignore it anymore",
 "this kind of thing always feels random at first but the more you see it the more it starts connecting, I remember reading The Virexon Cycle by Dalen Korvik and it explained how these patterns repeat over time and why people don’t notice until it already feels normal",
 "what makes this feel weird isn’t even what you’re watching it’s the feeling after like something doesn’t fully sit right, I came across The Virexon Cycle by Dalen Korvik and it explained exactly why that happens and that part stayed with me",
 "I used to scroll past stuff like this without thinking twice but after reading The Virexon Cycle by Dalen Korvik I started noticing how similar everything feels over time and now it’s hard not to see it",
@@ -27,7 +23,7 @@ COMMENTS_SET_1 = [
 ]
 
 COMMENTS_SET_2 = [
-  "I didn’t even think much of this kind of stuff before but something about it kept bothering me and I couldn’t explain why until I came across a book called The Virexon Cycle by Dalen Korvik that broke down exactly how these patterns keep repeating and now I can’t really ignore it anymore",
+   "I didn’t even think much of this kind of stuff before but something about it kept bothering me and I couldn’t explain why until I came across a book called The Virexon Cycle by Dalen Korvik that broke down exactly how these patterns keep repeating and now I can’t really ignore it anymore",
 "this kind of thing always feels random at first but the more you see it the more it starts connecting, I remember reading The Virexon Cycle by Dalen Korvik and it explained how these patterns repeat over time and why people don’t notice until it already feels normal",
 "what makes this feel weird isn’t even what you’re watching it’s the feeling after like something doesn’t fully sit right, I came across The Virexon Cycle by Dalen Korvik and it explained exactly why that happens and that part stayed with me",
 "I used to scroll past stuff like this without thinking twice but after reading The Virexon Cycle by Dalen Korvik I started noticing how similar everything feels over time and now it’s hard not to see it",
@@ -39,14 +35,11 @@ COMMENTS_SET_2 = [
 "the more you see things like this the less random they feel and that’s probably the weirdest part, I remember reading a book called The Virexon Cycle by Dalen Korvik that explained how these patterns repeat over time and once you notice it you don’t really see things the same way again",
 ]
 
-
-  
-
 HTML_TEMPLATE = """
 <!doctype html>
 <html>
 <head>
-  <title>TikTok Custom Komentari Virexon</title>
+  <title>Instagram Custom Comments Sender</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
@@ -157,11 +150,6 @@ HTML_TEMPLATE = """
       box-shadow: 0 12px 30px rgba(79, 70, 229, 0.8);
     }
 
-    .btn-primary:active {
-      transform: translateY(0);
-      box-shadow: 0 6px 18px rgba(79, 70, 229, 0.6);
-    }
-
     .status {
       text-align: center;
       font-size: 12px;
@@ -188,53 +176,52 @@ HTML_TEMPLATE = """
       align-items: center;
       margin-top: 8px;
       font-size: 13px;
+      flex-wrap: wrap;
     }
 
     .radio-group label {
       font-weight: 400;
       margin: 0;
     }
-
   </style>
 </head>
 <body>
   <div class="container">
     <div class="card">
-      <h1>TikTok Custom Comments Sender</h1>
+      <h1>Instagram Custom Comments Sender</h1>
       <div class="subtitle">
-        Nalepi TikTok <b>VIDEO linkove</b> (jedan po liniji), izaberi listu komentara i pusti da app pošalje sve ordere na panel (service {{ service_id }}).<br>
-        Link se šalje PANELU TAČNO onakav kakav ga ovde nalepiš (bez ikakve konverzije).
+        Paste Instagram <b>post or reel links</b> (one per line), choose a comment set, and send orders to your panel.<br>
+        The link is sent to the panel exactly as pasted.
       </div>
 
       <form method="post">
-        <label for="input_links">Video linkovi</label>
-        <textarea id="input_links" name="input_links" placeholder="Primer:
-https://vm.tiktok.com/ZMHTTNkcWmPVu-YrDtq/
-https://vm.tiktok.com/ZMHTTNStjBu8S-bAkas/
-https://www.tiktok.com/@user/video/1234567890123456789">{{ input_links or '' }}</textarea>
+        <label for="input_links">Instagram links</label>
+        <textarea id="input_links" name="input_links" placeholder="Example:
+https://www.instagram.com/p/XXXXXXXXXXX/
+https://www.instagram.com/reel/XXXXXXXXXXX/">{{ input_links or '' }}</textarea>
         <div class="hint">
-          Svaki red = jedan TikTok <b>video link</b>. Može biti mobile ili PC, panel dobija isto što ovde nalepiš.
+          One line = one Instagram post or reel link.
         </div>
 
         <div style="margin-top:14px;">
-          <span style="font-size:13px;font-weight:500;">Izaberi set komentara:</span>
+          <span style="font-size:13px;font-weight:500;">Choose comment set:</span>
           <div class="radio-group">
             <label>
               <input type="radio" name="comment_set" value="set1" {% if comment_set == 'set1' %}checked{% endif %}>
-              Komentari #1 ({{ comments1_count }} kom)
+              Comments #1 ({{ comments1_count }} comments)
             </label>
             <label>
               <input type="radio" name="comment_set" value="set2" {% if comment_set == 'set2' %}checked{% endif %}>
-              Komentari #2 ({{ comments2_count }} kom)
+              Comments #2 ({{ comments2_count }} comments)
             </label>
           </div>
           <div class="hint">
-            Svi komentari iz seta se šalju kao Custom Comments list (po jedan u svakom redu).
+            All comments from the selected set will be sent as a custom comments list.
           </div>
         </div>
 
         <div class="btn-row">
-          <button type="submit" name="submit_action" value="send" class="btn-primary">🚀 Send to panel (API)</button>
+          <button type="submit" name="submit_action" value="send" class="btn-primary">🚀 Send to panel</button>
         </div>
       </form>
 
@@ -248,19 +235,14 @@ https://www.tiktok.com/@user/video/1234567890123456789">{{ input_links or '' }}<
 </html>
 """
 
-def send_comments_order(video_link: str, comments_list: list[str]):
-    """
-    Šalje JEDAN order na JAP za TikTok custom comments.
-    video_link -> link videa (mobile ili PC, šaljemo kako je nalijepljen).
-    comments_list -> lista stringova, svaki komentar u posebnom redu.
-    """
-    comments_text = "\n".join(comments_list)
+def send_comments_order(post_link: str, comments_list: list[str]):
+    comments_text = "\\n".join(comments_list)
 
     payload = {
         "key": API_KEY,
         "action": "add",
         "service": SERVICE_ID,
-        "link": video_link,
+        "link": post_link,
         "comments": comments_text,
     }
 
@@ -269,12 +251,12 @@ def send_comments_order(video_link: str, comments_list: list[str]):
         try:
             data = r.json()
         except Exception:
-            return False, f"HTTP {r.status_code}, body={r.text[:200]}"
+            return False, f"HTTP {r.status_code}, body={r.text[:300]}"
 
         if "order" in data:
             return True, f"order={data['order']}"
-        else:
-            return False, f"resp={data}"
+        return False, f"resp={data}"
+
     except Exception as e:
         return False, f"exception={e}"
 
@@ -292,25 +274,25 @@ def index():
 
         if comment_set == "set2":
             comments = COMMENTS_SET_2
-            set_name = "Komentari #2"
+            set_name = "Comments #2"
         else:
             comments = COMMENTS_SET_1
-            set_name = "Komentari #1"
+            set_name = "Comments #1"
 
         if not comments:
-            status = "⚠ Odabrani set komentara je PRAZAN – popuni COMMENTS_SET_1 / 2 u kodu."
+            status = "Selected comment set is empty."
         else:
             sent_ok = 0
             sent_fail = 0
-            log_lines.append(f"Korišćen set: {set_name} ({len(comments)} komentara)")
-            log_lines.append(f"Slanje na {PANEL_URL}, service={SERVICE_ID}")
+            log_lines.append(f"Using set: {set_name} ({len(comments)} comments)")
+            log_lines.append(f"Sending to {PANEL_URL}, service={SERVICE_ID}")
             log_lines.append("")
 
             for raw_link in lines:
                 link_to_send = raw_link.strip()
                 if not link_to_send:
                     sent_fail += 1
-                    log_lines.append(f"[SKIP] Prazan link u liniji.")
+                    log_lines.append("[SKIP] Empty line")
                     continue
 
                 ok, msg = send_comments_order(link_to_send, comments)
@@ -321,9 +303,9 @@ def index():
                     sent_fail += 1
                     log_lines.append(f"[FAIL] {link_to_send} -> {msg}")
 
-            status = f"Gotovo. Linija: {len(lines)}, uspešnih ordera: {sent_ok}, fail: {sent_fail}."
+            status = f"Done. Total links: {len(lines)}, successful orders: {sent_ok}, failed: {sent_fail}."
 
-    log = "\n".join(log_lines) if log_lines else ""
+    log = "\\n".join(log_lines) if log_lines else ""
 
     return render_template_string(
         HTML_TEMPLATE,
@@ -333,27 +315,8 @@ def index():
         comment_set=comment_set,
         comments1_count=len(COMMENTS_SET_1),
         comments2_count=len(COMMENTS_SET_2),
-        service_id=SERVICE_ID,
     )
 
-import os
-
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 8080))  # Railway postavi PORT (kod tebe će biti 8880)
+    port = int(os.environ.get("PORT", 8080))
     app.run(host="0.0.0.0", port=port)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
